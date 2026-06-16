@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>GB Batatas - Notas</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; min-height: 100vh; }
+
+  /* FORMULÁRIO */
+  .form-wrap { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
+  .logo-area { text-align: center; padding: 20px 0 24px; }
+  .logo-area h1 { font-size: 26px; font-weight: 700; color: #1a5c2a; letter-spacing: 1px; }
+  .logo-area p { font-size: 13px; color: #888; margin-top: 2px; }
+
+  .section-label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.6px; margin: 20px 0 8px 4px; }
+  .card { background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 4px; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; }
+  .field input { width: 100%; font-size: 16px; padding: 10px 12px; border-radius: 10px; border: 1px solid #e0e0e0; background: #fafafa; color: #000; -webkit-appearance: none; }
+  .field input:focus { outline: none; border-color: #1a5c2a; background: #fff; }
+
+  .prod-header { display: grid; grid-template-columns: 1fr 90px 100px; gap: 8px; margin-bottom: 6px; }
+  .prod-header span { font-size: 11px; color: #aaa; text-align: center; }
+  .prod-header span:first-child { text-align: left; }
+  .prod-row { display: grid; grid-template-columns: 1fr 90px 100px; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .prod-row:last-child { margin-bottom: 0; }
+  .prod-nome { font-size: 15px; font-weight: 500; color: #1a5c2a; }
+  .prod-row input { font-size: 15px; padding: 9px 8px; border-radius: 10px; border: 1px solid #e0e0e0; background: #fafafa; color: #000; text-align: center; width: 100%; -webkit-appearance: none; }
+  .prod-row input:focus { outline: none; border-color: #1a5c2a; background: #fff; }
+
+  .frete-sep { border-top: 1px solid #f0f0f0; margin: 12px 0 10px; }
+
+  .resumo-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; color: #555; }
+  .resumo-row:last-child { border-bottom: none; }
+  .resumo-row.total { font-size: 17px; font-weight: 700; color: #1a5c2a; padding-top: 12px; }
+  .resumo-row.funrural { color: #c0392b; }
+
+  .btn-gerar { display: block; width: 100%; padding: 16px; background: #1a5c2a; color: #fff; border: none; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 24px; -webkit-tap-highlight-color: transparent; }
+  .btn-gerar:active { opacity: 0.85; }
+
+  /* VISUALIZAÇÃO DA NOTA */
+  #view-area { display: none; background: #f2f2f7; min-height: 100vh; }
+
+  .view-actions { max-width: 480px; margin: 0 auto; padding: 16px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+  .btn-pdf { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: #1a5c2a; color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .btn-novo { width: 100%; padding: 12px; background: #fff; color: #555; border: 1px solid #ddd; border-radius: 14px; font-size: 15px; cursor: pointer; }
+
+  .hint-box { background: #e8f5e9; border-radius: 12px; padding: 12px 14px; margin: 12px 16px 0; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .hint-box p { font-size: 13px; color: #2e7d32; line-height: 1.6; }
+  .hint-box strong { font-weight: 600; }
+
+  /* DOCUMENTOS IMPRESSOS */
+  .docs-container { max-width: 480px; margin: 16px auto; padding: 0 12px 40px; }
+
+  .doc { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; color: #000; }
+  .doc-logo { text-align: center; border-bottom: 2px solid #1a5c2a; padding-bottom: 14px; margin-bottom: 14px; }
+  .doc-logo h2 { font-size: 22px; font-weight: 800; color: #1a5c2a; letter-spacing: 1px; }
+  .doc-logo p { font-size: 12px; color: #777; margin-top: 2px; }
+  .doc-num { text-align: right; font-size: 11px; color: #aaa; margin-bottom: 6px; }
+
+  .doc-meta { font-size: 12px; line-height: 2; margin-bottom: 14px; }
+  .doc-meta .row { display: flex; gap: 20px; }
+  .doc-meta span { color: #777; }
+  .doc-meta strong { color: #000; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+  thead th { background: #1a5c2a; color: #fff; padding: 7px 6px; text-align: left; }
+  thead th.r { text-align: right; }
+  tbody td { padding: 6px 6px; border-bottom: 1px solid #f0f0f0; color: #000; }
+  tbody td.r { text-align: right; }
+  tfoot td { padding: 7px 6px; font-weight: 700; background: #f9f9f9; color: #000; }
+  tfoot td.r { text-align: right; }
+
+  .doc-totais { text-align: right; font-size: 13px; line-height: 2; }
+  .doc-totais .funrural { color: #c0392b; }
+  .doc-totais .total-final { font-size: 16px; font-weight: 800; color: #1a5c2a; }
+
+  .assinaturas { display: flex; justify-content: space-between; margin-top: 28px; }
+  .assin { width: 44%; text-align: center; border-top: 1px solid #000; padding-top: 5px; font-size: 11px; color: #555; }
+
+  .doc-title-pag { text-align: center; font-size: 15px; font-weight: 700; margin-bottom: 14px; color: #000; }
+
+  /* IMPRESSÃO */
+  @media print {
+    body { background: #fff; }
+    #view-area { display: block !important; }
+    #form-area { display: none !important; }
+    .view-actions, .hint-box { display: none !important; }
+    .docs-container { padding: 0; margin: 0; max-width: 100%; }
+    .doc { border-radius: 0; box-shadow: none; margin-bottom: 0; page-break-after: always; }
+    .doc:last-child { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FORMULÁRIO -->
+<div id="form-area">
+  <div class="form-wrap">
+    <div class="logo-area">
+      <h1>GB BATATAS</h1>
+      <p>Gerador de notas</p>
+    </div>
+
+    <p class="section-label">Cliente e entrega</p>
+    <div class="card">
+      <div class="field">
+        <label>Nome do cliente</label>
+        <input type="text" id="cliente" placeholder="Ex: Paulo da Batata" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Cidade</label>
+        <input type="text" id="cidade" placeholder="Ex: BH" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Motorista</label>
+        <input type="text" id="motorista" placeholder="Ex: Rafael" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Placa</label>
+        <input type="text" id="placa" placeholder="Ex: BWG7423" autocomplete="off" style="text-transform:uppercase" />
+      </div>
+    </div>
+
+    <p class="section-label">Produtos</p>
+    <div class="card">
+      <div class="prod-header">
+        <span>Produto</span>
+        <span>Sacas</span>
+        <span>R$/saca</span>
+      </div>
+      <div class="prod-row">
+        <div class="prod-nome">Especial</div>
+        <input type="number" id="qt_esp" placeholder="0" min="0" inputmode="numeric" oninput="calcular()" />
+        <input type="number" id="pr_esp" placeholder="0,00" min="0" step="0.01" inputmode="decimal" oninput="calcular()" />
+      </div>
+      <div class="prod-row">
+        <div class="prod-nome">Diversa</div>
+        <input type="number" id="qt_div" placeholder="0" min="0" inputmode="numeric" oninput="calcular()" />
+        <input type="number" id="pr_div" placeholder="0,00" min="0" step="0.01" inputmode="decimal" oninput="calcular()" />
+      </div>
+      <div class="prod-row">
+        <div class="prod-nome">X</div>
+        <input type="number" id="qt_x" placeholder="0" min="0" inputmode="numeric" oninput="calcular()" />
+        <input type="number" id="pr_x" placeholder="0,00" min="0" step="0.01" inputmode="decimal" oninput="calcular()" />
+      </div>
+      <div class="frete-sep"></div>
+      <div class="prod-row">
+        <div class="prod-nome" style="color:#555">Frete</div>
+        <input type="number" id="qt_frete" placeholder="0" min="0" inputmode="numeric" oninput="calcular()" />
+        <input type="number" id="pr_frete" placeholder="0,00" min="0" step="0.01" inputmode="decimal" oninput="calcular()" />
+      </div>
+    </div>
+
+    <p class="section-label">Resumo</p>
+    <div class="card">
+      <div class="resumo-row"><span>Subtotal produtos</span><span id="r_sub">R$ 0,00</span></div>
+      <div class="resumo-row"><span>Frete</span><span id="r_frete">R$ 0,00</span></div>
+      <div class="resumo-row funrural"><span>Funrural (1,5%)</span><span id="r_funrural">- R$ 0,00</span></div>
+      <div class="resumo-row total"><span>Total final</span><span id="r_total">R$ 0,00</span></div>
+    </div>
+
+    <button class="btn-gerar" onclick="gerar()">Gerar documentos</button>
+  </div>
+</div>
+
+<!-- VISUALIZAÇÃO -->
+<div id="view-area">
+  <div class="view-actions">
+    <button class="btn-pdf" onclick="window.print()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Salvar / Imprimir PDF
+    </button>
+    <button class="btn-novo" onclick="novaNota()">Nova nota</button>
+  </div>
+  <div class="hint-box">
+    <p>No iPhone: toque em <strong>Salvar / Imprimir PDF</strong> → na tela de impressão, <strong>junte dois dedos na prévia</strong> para abrir o PDF → toque em <strong>Compartilhar</strong> → escolha <strong>WhatsApp</strong>.</p>
+  </div>
+  <div class="docs-container" id="docs-out"></div>
+</div>
+
+<script>
+const fmt = v => 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const n = id => parseFloat(document.getElementById(id).value) || 0;
+
+function calcular() {
+  const sub = n('qt_esp')*n('pr_esp') + n('qt_div')*n('pr_div') + n('qt_x')*n('pr_x');
+  const frete = n('qt_frete')*n('pr_frete');
+  const funrural = sub * 0.015;
+  const total = sub + frete - funrural;
+  document.getElementById('r_sub').textContent = fmt(sub);
+  document.getElementById('r_frete').textContent = fmt(frete);
+  document.getElementById('r_funrural').textContent = '- ' + fmt(funrural);
+  document.getElementById('r_total').textContent = fmt(total);
+}
+
+function gerar() {
+  const cliente = document.getElementById('cliente').value.trim();
+  const cidade = document.getElementById('cidade').value.trim();
+  const motorista = document.getElementById('motorista').value.trim();
+  const placa = document.getElementById('placa').value.trim().toUpperCase();
+
+  if (!cliente || !cidade) { alert('Preencha o nome do cliente e a cidade.'); return; }
+
+  const qt_esp = n('qt_esp'), pr_esp = n('pr_esp');
+  const qt_div = n('qt_div'), pr_div = n('pr_div');
+  const qt_x   = n('qt_x'),  pr_x   = n('pr_x');
+  const qt_fr  = n('qt_frete'), pr_fr = n('pr_frete');
+
+  const sub = qt_esp*pr_esp + qt_div*pr_div + qt_x*pr_x;
+  const frete = qt_fr * pr_fr;
+  const funrural = sub * 0.015;
+  const total = sub + frete - funrural;
+  const qtTotal = qt_esp + qt_div + qt_x + qt_fr;
+
+  const hoje = new Date();
+  const data = String(hoje.getDate()).padStart(2,'0') + '/' + String(hoje.getMonth()+1).padStart(2,'0') + '/' + hoje.getFullYear();
+
+  let docNum = parseInt(localStorage.getItem('gb_num') || '9') + 1;
+  localStorage.setItem('gb_num', docNum);
+  const numStr = String(docNum).padStart(4,'0');
+
+  // linhas nota entrega
+  let linhasNE = '';
+  if (qt_esp > 0) linhasNE += `<tr><td>ESPECIAL</td><td class="r">${qt_esp}</td><td class="r">${fmt(pr_esp)}</td><td class="r">${fmt(qt_esp*pr_esp)}</td></tr>`;
+  if (qt_div > 0) linhasNE += `<tr><td>DIVERSA</td><td class="r">${qt_div}</td><td class="r">${fmt(pr_div)}</td><td class="r">${fmt(qt_div*pr_div)}</td></tr>`;
+  if (qt_x   > 0) linhasNE += `<tr><td>X</td><td class="r">${qt_x}</td><td class="r">${fmt(pr_x)}</td><td class="r">${fmt(qt_x*pr_x)}</td></tr>`;
+  if (qt_fr  > 0) linhasNE += `<tr><td>FRETE</td><td class="r">${qt_fr}</td><td class="r">${fmt(pr_fr)}</td><td class="r">${fmt(frete)}</td></tr>`;
+
+  // linhas doc pagamento
+  let linhasDP = '';
+  if (qt_esp > 0) linhasDP += `<tr><td>Batata Especial</td><td class="r">${qt_esp} sc / ${qt_esp*60} kg</td><td class="r">${fmt(pr_esp)}</td><td class="r">${fmt(qt_esp*pr_esp)}</td></tr>`;
+  if (qt_div > 0) linhasDP += `<tr><td>Batata Diversa</td><td class="r">${qt_div} sc / ${qt_div*60} kg</td><td class="r">${fmt(pr_div)}</td><td class="r">${fmt(qt_div*pr_div)}</td></tr>`;
+  if (qt_x   > 0) linhasDP += `<tr><td>Batata X</td><td class="r">${qt_x} sc / ${qt_x*60} kg</td><td class="r">${fmt(pr_x)}</td><td class="r">${fmt(qt_x*pr_x)}</td></tr>`;
+
+  const motorLine = motorista ? `<div><span>Motorista: </span><strong>${motorista}</strong>${placa ? ` &nbsp;|&nbsp; <span>Placa: </span><strong>${placa}</strong>` : ''}</div>` : '';
+
+  document.getElementById('docs-out').innerHTML = `
+  <div class="doc">
+    <div class="doc-num">Nota Nº ${numStr}</div>
+    <div class="doc-logo"><h2>GB BATATAS</h2><p>(41) 99722-6823</p></div>
+    <div class="doc-meta">
+      <div class="row"><div><span>Vendedor: </span><strong>Gustavo Brunetti</strong></div><div><span>Data: </span><strong>${data}</strong></div></div>
+      <div><span>Cliente: </span><strong>${cliente}</strong> &nbsp;|&nbsp; <span>Cidade: </span><strong>${cidade}</strong></div>
+      ${motorLine}
+    </div>
+    <table>
+      <thead><tr><th>Produto</th><th class="r">Qtd</th><th class="r">P. Unit.</th><th class="r">Total</th></tr></thead>
+      <tbody>${linhasNE}</tbody>
+      <tfoot><tr><td colspan="2">Qtd Total: ${qtTotal}</td><td>Total R$</td><td class="r">${fmt(sub+frete)}</td></tr></tfoot>
+    </table>
+    <div class="assinaturas">
+      <div class="assin">Assinatura do Emitente</div>
+      <div class="assin">Assinatura do Motorista</div>
+    </div>
+  </div>
+
+  <div class="doc">
+    <div class="doc-logo"><h2>GB BATATAS</h2><p>(41) 99722-6823</p></div>
+    <div class="doc-title-pag">DOCUMENTO DE PAGAMENTO</div>
+    <div class="doc-meta">
+      <div><span>Cliente: </span><strong>${cliente}</strong></div>
+      <div><span>Cidade: </span><strong>${cidade}</strong></div>
+      <div><span>Data da venda: </span><strong>${data}</strong></div>
+    </div>
+    <table>
+      <thead><tr><th>Produto</th><th class="r">Quantidade</th><th class="r">P. Unit.</th><th class="r">Total</th></tr></thead>
+      <tbody>${linhasDP}</tbody>
+    </table>
+    <div class="doc-totais">
+      <div>Subtotal: ${fmt(sub)}</div>
+      <div class="funrural">Funrural (1,5%): - ${fmt(funrural)}</div>
+      ${frete > 0 ? `<div>Frete: + ${fmt(frete)}</div>` : ''}
+      <div class="total-final">Total Final: ${fmt(total)}</div>
+    </div>
+  </div>`;
+
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('view-area').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function novaNota() {
+  document.getElementById('form-area').style.display = 'block';
+  document.getElementById('view-area').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
