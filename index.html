@@ -267,7 +267,11 @@ input:checked+.slider:before{transform:translateX(20px)}
       <input type="text" id="pg-filtro-nota" placeholder="# Nota" style="max-width:80px" oninput="renderPagamentos()"/>
     </div>
     <div class="filtros">
-      <input type="date" id="pg-filtro-data" oninput="renderPagamentos()" style="flex:1;font-size:15px;padding:10px 12px;border-radius:10px;border:1px solid #e0e0e0;background:#fff;color:#555;-webkit-appearance:none"/>
+      <div style="display:flex;align-items:center;gap:6px;flex:1">
+        <input type="date" id="pg-filtro-data-de" oninput="renderPagamentos()" style="flex:1;font-size:14px;padding:10px 8px;border-radius:10px;border:1px solid #e0e0e0;background:#fff;color:#555;-webkit-appearance:none"/>
+        <span style="font-size:12px;color:#888;white-space:nowrap">at&#xe9;</span>
+        <input type="date" id="pg-filtro-data-ate" oninput="renderPagamentos()" style="flex:1;font-size:14px;padding:10px 8px;border-radius:10px;border:1px solid #e0e0e0;background:#fff;color:#555;-webkit-appearance:none"/>
+      </div>
     </div>
     <button class="btn-relatorio" onclick="gerarRelatorio()">&#x1F4CA; Gerar Relat&#xf3;rio PDF</button>
     <div id="lista-fechamentos"></div>
@@ -613,16 +617,18 @@ function gerarFechamento(){
 function renderPagamentos(){
   var fNome=document.getElementById("pg-filtro-nome").value.toLowerCase().trim();
   var fNota=document.getElementById("pg-filtro-nota").value.toLowerCase().trim();
-  var fData=document.getElementById("pg-filtro-data").value;
+  var fDataDe=document.getElementById("pg-filtro-data-de").value;
+  var fDataAte=document.getElementById("pg-filtro-data-ate").value;
   var el=document.getElementById("lista-fechamentos");
   el.innerHTML="<div class='lista-vazia'><div style='font-size:24px'>&#x23F3;</div>Carregando...</div>";
   DB.getFechamentos(function(lista){
     var fil=lista.filter(function(f){
       var dvFmt=fmtData(f.data_venda||f.data||"");
       var dvConv=dvFmt.split("/").reverse().join("-");
+      var dentroIntervalo=(!fDataDe&&!fDataAte)||((!fDataDe||dvConv>=fDataDe)&&(!fDataAte||dvConv<=fDataAte));
       return (!fNome||String(f.cliente).toLowerCase().includes(fNome))&&
              (!fNota||String(f.id).toLowerCase().includes(fNota))&&
-             (!fData||dvConv===fData);
+             dentroIntervalo;
     });
     if(!fil.length){el.innerHTML="<div class='lista-vazia'><div style='font-size:36px;margin-bottom:8px'>&#x1F4ED;</div>Nenhum fechamento encontrado.</div>";return;}
     el.innerHTML=fil.map(function(f){
@@ -645,15 +651,17 @@ function renderPagamentos(){
 function gerarRelatorio(){
   var fNome=document.getElementById("pg-filtro-nome").value.toLowerCase().trim();
   var fNota=document.getElementById("pg-filtro-nota").value.toLowerCase().trim();
-  var fData=document.getElementById("pg-filtro-data").value;
+  var fDataDe=document.getElementById("pg-filtro-data-de").value;
+  var fDataAte=document.getElementById("pg-filtro-data-ate").value;
   _cacheFechamentos=null;
   DB.getFechamentos(function(lista){
     var fil=lista.filter(function(f){
       var dvFmt=fmtData(f.data_venda||f.data||"");
       var dvConv=dvFmt.split("/").reverse().join("-");
+      var dentroIntervalo=(!fDataDe&&!fDataAte)||((!fDataDe||dvConv>=fDataDe)&&(!fDataAte||dvConv<=fDataAte));
       return (!fNome||String(f.cliente).toLowerCase().includes(fNome))&&
              (!fNota||String(f.id).toLowerCase().includes(fNota))&&
-             (!fData||dvConv===fData);
+             dentroIntervalo;
     });
     if(!fil.length){alert("Nenhum fechamento encontrado com os filtros atuais.");return;}
     var logo='<img src="'+LOGO+'" style="height:72px;object-fit:contain"/>';
@@ -675,7 +683,8 @@ function gerarRelatorio(){
     var filtroDesc="";
     if(fNome) filtroDesc+=" | Cliente: "+fNome;
     if(fNota) filtroDesc+=" | Nota: "+fNota;
-    if(fData) filtroDesc+=" | Data: "+fData.split("-").reverse().join("/");
+    if(fDataDe) filtroDesc+=" | De: "+fDataDe.split("-").reverse().join("/");
+    if(fDataAte) filtroDesc+=" | At&#xe9;: "+fDataAte.split("-").reverse().join("/");
     var html="<div class='doc' style='font-family:Arial,sans-serif'>"+
       "<div class='doc-logo-img'>"+logo+"</div>"+
       "<div style='text-align:center;font-size:15px;font-weight:700;margin-bottom:6px'>RELAT&#xd3;RIO DE FECHAMENTOS</div>"+
