@@ -713,11 +713,11 @@ function gerarRelatorio(){
 function gerarPagamento(f){
   var funr=parseFloat(f.sub)*0.015;
   var li="";
-  if(f.qt_esp>0)li+="<tr><td>Batata Especial</td><td class='r'>"+f.qt_esp+" sc/"+(f.qt_esp*60)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_esp))+"</td><td class='r'>"+fmt(f.qt_esp*parseFloat(f.pr_esp))+"</td></tr>";
-  if(f.qt_div>0)li+="<tr><td>Batata Diversa</td><td class='r'>"+f.qt_div+" sc/"+(f.qt_div*60)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_div))+"</td><td class='r'>"+fmt(f.qt_div*parseFloat(f.pr_div))+"</td></tr>";
-  if(f.qt_x>0)li+="<tr><td>Batata X</td><td class='r'>"+f.qt_x+" sc/"+(f.qt_x*60)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_x))+"</td><td class='r'>"+fmt(f.qt_x*parseFloat(f.pr_x))+"</td></tr>";
-  if(f.qt_3x>0)li+="<tr><td>Batata 3&#xaa; X</td><td class='r'>"+f.qt_3x+" sc/"+(f.qt_3x*60)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_3x))+"</td><td class='r'>"+fmt(f.qt_3x*parseFloat(f.pr_3x))+"</td></tr>";
-  if(f.qt_esc>0)li+="<tr><td>Batata Escovada</td><td class='r'>"+f.qt_esc+" sc/"+(f.qt_esc*60)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_esc))+"</td><td class='r'>"+fmt(f.qt_esc*parseFloat(f.pr_esc))+"</td></tr>";
+  if(f.qt_esp>0)li+="<tr><td>Batata Especial</td><td class='r'>"+f.qt_esp+" sc/"+(f.qt_esp*25)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_esp))+"</td><td class='r'>"+fmt(f.qt_esp*parseFloat(f.pr_esp))+"</td></tr>";
+  if(f.qt_div>0)li+="<tr><td>Batata Diversa</td><td class='r'>"+f.qt_div+" sc/"+(f.qt_div*25)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_div))+"</td><td class='r'>"+fmt(f.qt_div*parseFloat(f.pr_div))+"</td></tr>";
+  if(f.qt_x>0)li+="<tr><td>Batata X</td><td class='r'>"+f.qt_x+" sc/"+(f.qt_x*25)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_x))+"</td><td class='r'>"+fmt(f.qt_x*parseFloat(f.pr_x))+"</td></tr>";
+  if(f.qt_3x>0)li+="<tr><td>Batata 3&#xaa; X</td><td class='r'>"+f.qt_3x+" sc/"+(f.qt_3x*25)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_3x))+"</td><td class='r'>"+fmt(f.qt_3x*parseFloat(f.pr_3x))+"</td></tr>";
+  if(f.qt_esc>0)li+="<tr><td>Batata Escovada</td><td class='r'>"+f.qt_esc+" sc/"+(f.qt_esc*25)+" kg</td><td class='r'>"+fmt(parseFloat(f.pr_esc))+"</td><td class='r'>"+fmt(f.qt_esc*parseFloat(f.pr_esc))+"</td></tr>";
   var logo='<img src="'+LOGO+'" style="height:72px;object-fit:contain"/>';
   var vencBox=f.venc?"<div class='venc-box'>&#x1F4C5; <strong>Vencimento: "+fmtData(f.venc)+"</strong> &nbsp;("+f.dias+" dias)</div>":"";
   var sub=parseFloat(f.sub)||0;
